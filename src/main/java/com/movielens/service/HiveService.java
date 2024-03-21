@@ -27,10 +27,11 @@ public class HiveService {
     public List<Object> getGenralInfo() {
         List<Object> list = new ArrayList<>();
 
+        // Add general information
         list.add(hiveRepository.getUInfo());
 
+        // Add rating percentages
         List<Record> ratingPercentages = new ArrayList<>();
-
         List<Map<String, Object>> listMap = hiveRepository.getMovieRatingPercentage();
         for (Map map : listMap) {
 
@@ -41,6 +42,10 @@ public class HiveService {
         }
 
         list.add(ratingPercentages);
+        
+        // Add top five popular movies
+        list.add(hiveRepository.getTopFivePopularMovie());
+        
         return list;
     }
 

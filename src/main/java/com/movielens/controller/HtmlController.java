@@ -31,7 +31,7 @@ public class HtmlController {
         List<Object> info = hiveService.getGenralInfo();
         model.addAttribute("info", info.get(0));
         model.addAttribute("ratingPercentages", info.get(1));
-        
+        model.addAttribute("topFive", info.get(2));
         return "index";
     }
 }

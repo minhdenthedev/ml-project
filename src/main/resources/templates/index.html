@@ -62,5 +62,18 @@
             </tr>
         </table>
     </div>
+    <div class="top-five-popular">
+        <h2>Top five popular movies</h2>
+        <table>
+            <tr>
+                <th>Movie</th>
+                <th>Number of users rated</th>
+            </tr>
+            <tr th:each="item :${topFive}">
+                <td th:text="${item.movie_title}"></td>
+                <td th:text="${item.user_rated}"></td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>

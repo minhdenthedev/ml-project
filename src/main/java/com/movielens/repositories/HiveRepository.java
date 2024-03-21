@@ -32,24 +32,36 @@ public class HiveRepository {
 
     public Map<String, Object> getUInfo() {
         Map<String, Object> map = new HashMap<>();
-        
+
         jdbcTemplate.execute("use default");
         String query = "select * from u_info";
         logger.info(query);
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
-        
+
         map.put("users", result.get(0).get("u_info.users"));
         map.put("movies", result.get(0).get("u_info.items"));
         map.put("ratings", result.get(0).get("u_info.ratings"));
-        
+
         return map;
     }
-    
+
     public List<Map<String, Object>> getMovieRatingPercentage() {
         jdbcTemplate.execute("use default");
         String query = "select rating, count(*) as number from u_data group by rating";
         List<Map<String, Object>> result = jdbcTemplate.queryForList(query);
         return result;
+    }
+
+    public List<Map<String, Object>> getTopFivePopularMovie() {
+        jdbcTemplate.execute("use default");
+        String query = "select movie_title, count(*) as user_rated \n"
+                + "from u_data \n"
+                + "join u_item\n"
+                + "on u_data.movie_id = u_item.movie_id \n"
+                + "group by movie_title\n"
+                + "order by user_rated desc\n"
+                + "limit 5";
+        return jdbcTemplate.queryForList(query);
     }
 
 //    private static final String SHOW_TABLES_QUERY = "show tables";
