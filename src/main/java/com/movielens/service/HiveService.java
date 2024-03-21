@@ -6,9 +6,12 @@ package com.movielens.service;
 
 /**
  * Class trung gian giua Controller va Service.
+ *
  * @author hminh
  */
+import com.movielens.entity.RatingPercentage;
 import com.movielens.repositories.HiveRepository;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,23 +24,43 @@ public class HiveService {
     @Autowired
     private HiveRepository hiveRepository;
 
-    public List<Map<String, Object>> getTables(String schema) {
-        return hiveRepository.getTables(schema);
+    public List<Object> getGenralInfo() {
+        List<Object> list = new ArrayList<>();
+
+        list.add(hiveRepository.getUInfo());
+
+        List<Record> ratingPercentages = new ArrayList<>();
+
+        List<Map<String, Object>> listMap = hiveRepository.getMovieRatingPercentage();
+        for (Map map : listMap) {
+
+            Integer rating = (int) map.get("rating");
+            Long number = (long) map.get("number");
+            String percentage = Long.toString(number / 1000) + "%";
+            ratingPercentages.add(new RatingPercentage(rating, number, percentage));
+        }
+
+        list.add(ratingPercentages);
+        return list;
     }
 
-    public List<Map<String, Object>> getSchemas() {
-        return hiveRepository.getSchemas();
-    }
-
-    public List<Map<String, Object>> getTablePreview(String schema, String table) {
-        return hiveRepository.getTablePreview(schema, table);
-    }
-    
-    public void createTable(String schema, String table) {
-        hiveRepository.createTable(schema, table);
-    }
-    
-    public List<Map<String, Object>> selectRowFromTable(String schema, String row, String table) {
-        return hiveRepository.selectRowFromTable(schema, row, table);
-    }
+//    public List<Map<String, Object>> getTables(String schema) {
+//        return hiveRepository.getTables(schema);
+//    }
+//
+//    public List<Map<String, Object>> getSchemas() {
+//        return hiveRepository.getSchemas();
+//    }
+//
+//    public List<Map<String, Object>> getTablePreview(String schema, String table) {
+//        return hiveRepository.getTablePreview(schema, table);
+//    }
+//    
+//    public void createTable(String schema, String table) {
+//        hiveRepository.createTable(schema, table);
+//    }
+//    
+//    public List<Map<String, Object>> selectRowFromTable(String schema, String row, String table) {
+//        return hiveRepository.selectRowFromTable(schema, row, table);
+//    }
 }

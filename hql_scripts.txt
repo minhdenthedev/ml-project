@@ -1,0 +1,2 @@
+create table u_item (movie_id int, movie_title string, release_date string, unknown tinyint, action tinyint, adventure tinyint, animation tinyint, children tinyint, comedy tinyint, crime tinyint, documentary tinyint, drama tinyint, fantasy tinyint, film_noir tinyint, horror tinyint, musical tinyint, mystery tinyint, romance tinyint, scifi tinyint, thriller tinyint, war tinyint, western tinyint) row format delimited fields terminated by '|' stored as textfile;
+

@@ -33,43 +33,45 @@ public class HiveController {
 
     @Autowired
     private HiveService hiveService;
-
-    @RequestMapping(value = "/{schema}/tables", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Map<String, Object>>> getTablesForSchema(@PathVariable String schema) {
-        List<Map<String, Object>> rows = hiveService.getTables(schema);
-        return new ResponseEntity<>(rows, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/schemas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Map<String, Object>>> getSchemas() {
-        List<Map<String, Object>> rows = hiveService.getSchemas();
-        return new ResponseEntity<>(rows, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/{schema}/preview/{table}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Map<String, Object>>> previewTable(
-            @PathVariable String schema, @PathVariable String table
-    ) {
-        List<Map<String, Object>> rows = hiveService.getTablePreview(schema, table);
-        return new ResponseEntity<>(rows, HttpStatus.OK);
-    }
     
-    @RequestMapping(value = "{schema}/create/{table}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> createTable(@PathVariable String schema, @PathVariable String table) {
-        hiveService.createTable(schema, table);
-        return ResponseEntity.ok().body("Create table successfully!");
-    }
     
-    @RequestMapping(value = "{schema}/select/{row}/from/{table}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE) 
-    public ResponseEntity<List<Map<String, Object>>> selectRowFromTable(
-            @PathVariable String schema,
-            @PathVariable String row,
-            @PathVariable String table
-    ) {
-        List<Map<String, Object>> results = hiveService.selectRowFromTable(
-                schema, row, table
-        );
-        return ResponseEntity.ok().body(results);
-        
-    }
+
+//    @RequestMapping(value = "/{schema}/tables", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<Map<String, Object>>> getTablesForSchema(@PathVariable String schema) {
+//        List<Map<String, Object>> rows = hiveService.getTables(schema);
+//        return new ResponseEntity<>(rows, HttpStatus.OK);
+//    }
+//
+//    @RequestMapping(value = "/schemas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<Map<String, Object>>> getSchemas() {
+//        List<Map<String, Object>> rows = hiveService.getSchemas();
+//        return new ResponseEntity<>(rows, HttpStatus.OK);
+//    }
+//
+//    @RequestMapping(value = "/{schema}/preview/{table}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<List<Map<String, Object>>> previewTable(
+//            @PathVariable String schema, @PathVariable String table
+//    ) {
+//        List<Map<String, Object>> rows = hiveService.getTablePreview(schema, table);
+//        return new ResponseEntity<>(rows, HttpStatus.OK);
+//    }
+//    
+//    @RequestMapping(value = "{schema}/create/{table}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> createTable(@PathVariable String schema, @PathVariable String table) {
+//        hiveService.createTable(schema, table);
+//        return ResponseEntity.ok().body("Create table successfully!");
+//    }
+//    
+//    @RequestMapping(value = "{schema}/select/{row}/from/{table}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE) 
+//    public ResponseEntity<List<Map<String, Object>>> selectRowFromTable(
+//            @PathVariable String schema,
+//            @PathVariable String row,
+//            @PathVariable String table
+//    ) {
+//        List<Map<String, Object>> results = hiveService.selectRowFromTable(
+//                schema, row, table
+//        );
+//        return ResponseEntity.ok().body(results);
+//        
+//    }
 }
