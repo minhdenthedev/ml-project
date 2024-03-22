@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +63,33 @@ public class HiveRepository {
                 + "group by movie_title\n"
                 + "order by user_rated desc\n"
                 + "limit 5";
+        return jdbcTemplate.queryForList(query);
+    }
+    
+    public List<Map<String, Object>> keywordSearch(String keyword) {
+        keyword = WordUtils.capitalizeFully(keyword);
+        keyword.replace(' ', '%');
+        jdbcTemplate.execute("use default");
+        String query = "select movie_id, release_date, movie_title "
+                + "from u_item where "
+                + "movie_title like \'%" + keyword + "%\'";
+        
+        return jdbcTemplate.queryForList(query);
+    }
+    
+    public List<Map<String, Object>> getAllMovies() {
+        jdbcTemplate.execute("use default");
+        String query = "select movie_title, release_date,"
+                + " round(avg(rating), 2) as avg_rate "
+                + "from u_data join u_item on u_data.movie_id = u_item.movie_id "
+                + "group by movie_title, release_date limit 25";
+        return jdbcTemplate.queryForList(query);
+    }
+    
+    public List<Map<String, Object>> getMovieById(int id) {
+        jdbcTemplate.execute("use default");
+        String query = "select * from u_item "
+                + "where movie_id = " + id;
         return jdbcTemplate.queryForList(query);
     }
 

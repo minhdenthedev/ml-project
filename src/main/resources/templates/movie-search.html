@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>MovieLens Insights</title>
+        <style>
+            /* Apply general styling to the table */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            /* Apply styling to table header (th) */
+            th {
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            /* Apply styling to table data (td) */
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            /* Apply alternate background color to odd rows */
+            tr:nth-child(odd) {
+                background-color: #f9f9f9;
+            }
+        </style>
+    </head>
+    <body>
+    <center><h1>Search results for <span th:text="${form.keyword}"></span></h1></center>
+    <div class="movies">
+        <table>
+            <tr>
+                <th>Movie ID</th>
+                <th>Movie Title</th>
+                <th>Released Date</th>
+            </tr>
+            <tr th:each="item : ${results}">
+                <td>
+                    <a th:href="@{/movies/{id}(id=${movieId})">
+                        <span th:text="${item.movie_id}"></span>
+                    </a>
+                </td>            
+                <td th:text="${item.movie_title}"></td>
+                <td th:text="${item.release_date}"></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

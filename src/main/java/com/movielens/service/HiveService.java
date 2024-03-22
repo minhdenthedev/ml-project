@@ -9,6 +9,7 @@ package com.movielens.service;
  *
  * @author hminh
  */
+import com.movielens.entity.Movie;
 import com.movielens.entity.RatingPercentage;
 import com.movielens.repositories.HiveRepository;
 import java.util.ArrayList;
@@ -47,6 +48,19 @@ public class HiveService {
         list.add(hiveRepository.getTopFivePopularMovie());
         
         return list;
+    }
+    
+    public List<Map<String, Object>> keywordSearch(String keyword) {
+        return hiveRepository.keywordSearch(keyword);
+    }
+    
+    public List<Map<String, Object>> getAllMovies() {
+        return hiveRepository.getAllMovies();
+    }
+    
+    public Movie getMovieById(int id) {
+        Map<String, Object> map = hiveRepository.getMovieById(id).get(0);
+        
     }
 
 //    public List<Map<String, Object>> getTables(String schema) {
