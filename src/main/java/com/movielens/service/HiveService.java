@@ -18,9 +18,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class HiveService {
+    private static Logger logger = LoggerFactory.getLogger(HiveService.class);
 
     @Autowired
     private HiveRepository hiveRepository;
@@ -58,9 +61,10 @@ public class HiveService {
         return hiveRepository.getAllMovies();
     }
     
-    public Movie getMovieById(int id) {
+    public Movie getMovieById(long id) {
         Map<String, Object> map = hiveRepository.getMovieById(id).get(0);
-        
+        Movie movie = new Movie(map);
+        return movie;
     }
 
 //    public List<Map<String, Object>> getTables(String schema) {

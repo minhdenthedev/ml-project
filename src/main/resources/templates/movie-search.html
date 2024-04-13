@@ -39,12 +39,12 @@
                 <th>Released Date</th>
             </tr>
             <tr th:each="item : ${results}">
+                <td th:text="${item.movie_id}"></td>
                 <td>
-                    <a th:href="@{/movies/{id}(id=${movieId})">
-                        <span th:text="${item.movie_id}"></span>
+                    <a th:href="@{/movies/{id}(id=${item.movie_id})}">
+                        <span th:text="${item.movie_title}"></span>
                     </a>
-                </td>            
-                <td th:text="${item.movie_title}"></td>
+                </td>
                 <td th:text="${item.release_date}"></td>
             </tr>
         </table>

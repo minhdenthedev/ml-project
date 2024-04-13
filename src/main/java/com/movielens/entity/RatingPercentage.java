@@ -8,6 +8,6 @@ package com.movielens.entity;
  *
  * @author minh
  */
-public record RatingPercentage(int rating, long number, String percentage) {
+public record RatingPercentage(int rating, long number, String perc) {
     
 }

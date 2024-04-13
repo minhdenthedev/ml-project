@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>MovieLens Insights</title>
+        <style>
+            /* Apply general styling to the table */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            /* Apply styling to table header (th) */
+            th {
+                background-color: #f2f2f2;
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            /* Apply styling to table data (td) */
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            /* Apply alternate background color to odd rows */
+            tr:nth-child(odd) {
+                background-color: #f9f9f9;
+            }
+        </style>
+    </head>
+    <body>
+    <center><h1>Details</h1></center>
+    <center>
+        <!--        <form action="#" th:action="@{/movies-search}" th:object="${form}"
+                      method="post">
+                    <input type="text" th:field="*{keyword}" placeholder="Search movies ...">
+                    <p><input type="submit" value="Search"></p>
+                </form>-->
+    </center>
+    <div class="movie">
+        <fieldset style="width: 50%;">
+            <legend><h3>Title: <span th:text="${movie.getTitle()}"></span></h3></legend>
+            <p>Release Date: <span th:text="${movie.getReleaseDate()}"></span></p>
+            <p>IMDB URL: <a th:href="${movie.getImdbLink()}"><span th:text="${movie.getImdbLink()}"></span></a></p>
+            <p>Genres: <span th:text="${movie.getGenres()}"></span></p>
+            <form th:action="@{/rate-movie/__${movie.id}__}" th:object="${rateForm}"
+              method="post">
+            <p>Rate this movie </p>
+            <input type="number" th:field="*{rating}" id="rate">
+            <input type="submit" value="Rate">
+        </form>
+        </fieldset>
+    </div>
+    
+    <h2>Similar items</h2>
+    <div class="similar-movies" style="overflow-x: auto;">
+        <div style="display: inline-block; height: 150px; width: 200px; border: 1px solid black;" 
+             th:each="item : ${similarMovies}">
+                <a th:href="@{/movies/{id}(id=${item.getId()})}">
+                        <span th:text="${item.getTitle()}"></span>
+                    </a>
+                <p>Release date: <span th:text="${item.getReleaseDate()}"></span></p>
+                <p>Genres: <span th:text="${item.getGenres()}"></span></p>
+        </div>
+    </div>
+</body>
+</html>

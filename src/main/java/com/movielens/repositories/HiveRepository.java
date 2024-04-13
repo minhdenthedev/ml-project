@@ -86,12 +86,13 @@ public class HiveRepository {
         return jdbcTemplate.queryForList(query);
     }
     
-    public List<Map<String, Object>> getMovieById(int id) {
+    public List<Map<String, Object>> getMovieById(long id) {
         jdbcTemplate.execute("use default");
         String query = "select * from u_item "
                 + "where movie_id = " + id;
         return jdbcTemplate.queryForList(query);
     }
+    
 
 //    private static final String SHOW_TABLES_QUERY = "show tables";
 //    private static final String SHOW_DATABASES_QUERY = "show databases";
