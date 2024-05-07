@@ -32,9 +32,9 @@
                         <a class="nav-link" href="#">Movies</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search" th:action="@{/movies-search}" th:object="${form}" method="post">
+                <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search your favorite movie..."
-                        aria-label="Search" th:field="*{keyword}">
+                        aria-label="Search">
                     <button class="btn btn-outline-light" type="submit">Search</button>
                 </form>
             </div>
@@ -170,15 +170,12 @@
             <div class="mt-3 mb-5">
                 <h4 class="h4">Recommended movies for you</h4>
                 <div class="list-group list-group-flush">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item list-group-item-action" th:each="item : ${recMovies}">
-                            <a th:href="@{/movies/{id}(id=${item.getId()})}" style="text-decoration: none;" class="text-decoration-none text-dark">
-                                <div class="d-flex justify-content-between">
-                                    <span th:text="${item.getTitle()}"></span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
+                    <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                        The current link item
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+                    <a href="#" class="list-group-item list-group-item-action">A third link item</a>
+                    <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
                 </div>
             </div>
             <div class="mt-3">

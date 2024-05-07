@@ -11,3 +11,6 @@ limit 5;
 
 select movie_title, round(avg(rating), 2) as avg_rate from u_data join u_item on u_data.movie_id = u_item.movie_id group by movie_title;
 
+
+# Get genre distribution
+select sum(unknown) as unknown, sum(action) as action, sum(adventure) as adventure, sum(children) as children, sum(comedy) as comedy, sum(crime) as crime, sum(documentary) as documentary, sum(drama) as drama, sum(fantasy) as fantasy, sum(film_noir) as film_noir, sum(horror) as horror, sum(musical) as musical, sum(mystery) as mystery, sum(romance) as romance, sum(scifi) as scifi, sum(thriller) as thriller, sum(war) as war, sum(western) as westerm from u_item;
