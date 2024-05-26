@@ -29,12 +29,18 @@
                         <a class="nav-link" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Movies</a>
+                        <a class="nav-link active" th:href="@{/movies}">Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/history-insight}">History Insights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/realtime-insight}">Real-time Insights</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search" th:action="@{/movies-search}" th:object="${form}" method="post">
                     <input class="form-control me-2" type="search" placeholder="Search your favorite movie..."
-                        aria-label="Search">
+                        aria-label="Search" th:field="*{keyword}">
                     <button class="btn btn-outline-light" type="submit">Search</button>
                 </form>
             </div>

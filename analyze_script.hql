@@ -1,0 +1,316 @@
+-- Get genre distribution
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_dist' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select sum(unknown) as unknown, sum(action) as action, sum(adventure) as adventure, sum(animation) as animation, sum(children) as children, sum(comedy) as comedy, sum(crime) as crime, sum(documentary) as documentary, sum(drama) as drama, sum(fantasy) as fantasy, sum(film_noir) as film_noir, sum(horror) as horror, sum(musical) as musical, sum(mystery) as mystery, sum(romance) as romance, sum(scifi) as scifi, sum(thriller) as thriller, sum(war) as war, sum(western) as westerm from u_item;
+
+-- Get average rating
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/avg_rating' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select movie_id, movie_title, release_date, round(avg(rating), 2) as avg_rate from u_data join u_item on u_data.movie_id = u_item.movie_id group by u_data.movie_id, u_item.movie_title, release_date sort by avg_rate desc limit 25;
+
+-- Highest rate frequency
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/high_rate_freq' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select movie_id, count(distinct(user_id)) as freq from u_data group by movie_id sort by freq desc;	
+
+-- Gender distribution
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/gender_dist' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select gender, count(*) as number from u_user group by gender;
+
+-- Job distribution
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/job_dist' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select occupation, count(*) as number from u_user group by occupation;
+
+-- Age distribution
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/age_dist' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT 
+    CASE 
+        WHEN age < 18 THEN 'Under 18'
+        WHEN age BETWEEN 18 AND 24 THEN '18-24'
+        WHEN age BETWEEN 25 AND 34 THEN '25-34'
+        WHEN age BETWEEN 35 AND 44 THEN '35-44'
+        WHEN age BETWEEN 45 AND 49 THEN '45-49'
+        WHEN age BETWEEN 50 AND 55 THEN '50-55'
+        ELSE '56+'
+    END AS age_range,
+    COUNT(*) AS user_count
+FROM 
+    u_user
+GROUP BY 
+    CASE 
+        WHEN age < 18 THEN 'Under 18'
+        WHEN age BETWEEN 18 AND 24 THEN '18-24'
+        WHEN age BETWEEN 25 AND 34 THEN '25-34'
+        WHEN age BETWEEN 35 AND 44 THEN '35-44'
+        WHEN age BETWEEN 45 AND 49 THEN '45-49'
+        WHEN age BETWEEN 50 AND 55 THEN '50-55'
+        ELSE '56+'
+    END;
+
+-- Rating distribution
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/rating_dist' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select rating, count(*) as number from u_data group by rating;
+
+-- Week and year
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/week_n_year' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+-- Rate distribution among ages
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/rate_dist_among_age' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT 
+    CASE 
+        WHEN age < 18 THEN 'Under 18'
+        WHEN age BETWEEN 18 AND 24 THEN '18-24'
+        WHEN age BETWEEN 25 AND 34 THEN '25-34'
+        WHEN age BETWEEN 35 AND 44 THEN '35-44'
+        WHEN age BETWEEN 45 AND 49 THEN '45-49'
+        WHEN age BETWEEN 50 AND 55 THEN '50-55'
+        ELSE '56+'
+    END AS age_range,
+    SUM(action) as action,
+    SUM(adventure) as adventure,
+    SUM(animation) as animation,
+    SUM(children) as children,
+    SUM(comedy) as comedy,
+    SUM(crime) as crime,
+    SUM(documentary) as documentary,
+    SUM(drama) as drama,
+    SUM(fantasy) as fantasy,
+    SUM(film_noir) as film_noir,
+    SUM(horror) as horror,
+    SUM(musical) as musical,
+    SUM(mystery) as mystery,
+    SUM(romance) as romance,
+    SUM(scifi) as scifi,
+    SUM(thriller) as thriller,
+    SUM(war) as war,
+    SUM(western) as western,
+    COUNT(*) as total
+FROM 
+    u_user
+JOIN u_data
+ON u_user.user_id = u_data.user_id
+JOIN 
+    u_item ON u_data.movie_id = u_item.movie_id 
+GROUP BY 
+    CASE 
+        WHEN age < 18 THEN 'Under 18'
+        WHEN age BETWEEN 18 AND 24 THEN '18-24'
+        WHEN age BETWEEN 25 AND 34 THEN '25-34'
+        WHEN age BETWEEN 35 AND 44 THEN '35-44'
+        WHEN age BETWEEN 45 AND 49 THEN '45-49'
+        WHEN age BETWEEN 50 AND 55 THEN '50-55'
+        ELSE '56+'
+    END;
+    
+-- Genre distribution among occupation
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genres_dist_among_occ' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT 
+    occupation, 
+    SUM(action) as action,
+    SUM(adventure) as adventure,
+    SUM(animation) as animation,
+    SUM(children) as children,
+    SUM(comedy) as comedy,
+    SUM(crime) as crime,
+    SUM(documentary) as documentary,
+    SUM(drama) as drama,
+    SUM(fantasy) as fantasy,
+    SUM(film_noir) as film_noir,
+    SUM(horror) as horror,
+    SUM(musical) as musical,
+    SUM(mystery) as mystery,
+    SUM(romance) as romance,
+    SUM(scifi) as scifi,
+    SUM(thriller) as thriller,
+    SUM(war) as war,
+    SUM(western) as western,
+    COUNT(*) as total
+FROM 
+    u_user 
+JOIN 
+    u_data ON u_data.user_id = u_user.user_id 
+JOIN 
+    u_item ON u_data.movie_id = u_item.movie_id 
+GROUP BY 
+    occupation;
+
+-- Genre distribution among genders
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_dist_among_gender' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT 
+    gender, 
+    SUM(action) as action,
+    SUM(adventure) as adventure,
+    SUM(animation) as animation,
+    SUM(children) as children,
+    SUM(comedy) as comedy,
+    SUM(crime) as crime,
+    SUM(documentary) as documentary,
+    SUM(drama) as drama,
+    SUM(fantasy) as fantasy,
+    SUM(film_noir) as film_noir,
+    SUM(horror) as horror,
+    SUM(musical) as musical,
+    SUM(mystery) as mystery,
+    SUM(romance) as romance,
+    SUM(scifi) as scifi,
+    SUM(thriller) as thriller,
+    SUM(war) as war,
+    SUM(western) as western,
+    COUNT(*) as total
+FROM 
+    u_user 
+JOIN 
+    u_data ON u_data.user_id = u_user.user_id 
+JOIN 
+    u_item ON u_data.movie_id = u_item.movie_id 
+GROUP BY 
+    gender;
+	
+	
+-- Rate frequency
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/rate_freq' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT
+    user_id,
+    AVG(time_difference/86400.0) AS average_days_per_rate
+FROM
+    (SELECT
+        user_id,
+        unixtime - LAG(unixtime) OVER (PARTITION BY user_id ORDER BY unixtime) AS time_difference
+    FROM
+        u_data) subquery
+GROUP BY
+    user_id;
+
+-- Number of users over time
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/num_user_time' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(distinct(user_id)) as num_user, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+	
+-- Rating distribution among genres
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/rate_dist_among_genre' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT
+    SUM(action) as action,
+    SUM(adventure) as adventure,
+    SUM(animation) as animation,
+    SUM(children) as children,
+    SUM(comedy) as comedy,
+    SUM(crime) as crime,
+    SUM(documentary) as documentary,
+    SUM(drama) as drama,
+    SUM(fantasy) as fantasy,
+    SUM(film_noir) as film_noir,
+    SUM(horror) as horror,
+    SUM(musical) as musical,
+    SUM(mystery) as mystery,
+    SUM(romance) as romance,
+    SUM(scifi) as scifi,
+    SUM(thriller) as thriller,
+    SUM(war) as war,
+    SUM(western) as western,
+    COUNT(*) as total
+FROM 
+    u_data 
+JOIN 
+    u_item ON u_data.movie_id = u_item.movie_id;
+    
+
+-- Genre rating over time
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/action' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.action = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/adventure' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.adventure = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/animation' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.animation = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/children' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.children = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/comedy' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.comedy = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/crime' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.crime = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/documentary' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.documentary = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/drama' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.drama = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/fantasy' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.fantasy = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/film_noir' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.film_noir = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/horror' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.horror = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/musical' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.musical = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/mystery' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.mystery = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/romance' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.romance = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/scifi' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.scifi = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/thriller' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.thriller = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/war' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.war = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_rate_time/western' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select round(avg(u_data.rating), 3) as avg_rate, weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.western = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+-- Genre pop over time	
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/action' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.action = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/adventure' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.adventure = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/animation' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.animation = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/children' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.children = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/comedy' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.comedy = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/crime' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.crime = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/documentary' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.documentary = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/drama' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.drama = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/fantasy' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.fantasy = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/film_noir' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.film_noir = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/horror' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.horror = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/musical' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.musical = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/mystery' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.mystery = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/romance' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.romance = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/scifi' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.scifi = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/thriller' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.thriller = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/war' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.war = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;
+
+INSERT OVERWRITE LOCAL DIRECTORY '/home/minh/Work/ml-project/hive_results/genre_pop_time/western' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+select count(*), weekofyear(from_unixtime(unixtime)) as week, from_unixtime(unixtime, 'yyyy') as year from u_data join u_item on u_data.movie_id = u_item.movie_id where u_item.western = 1 group by weekofyear(from_unixtime(unixtime)), from_unixtime(unixtime, 'yyyy') order by year, week;

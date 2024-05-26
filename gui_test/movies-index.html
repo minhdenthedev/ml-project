@@ -12,6 +12,7 @@
         integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -59,15 +60,57 @@
                 </div>
                 <div style="height: 300px;">
                     <h5 class="h5">Top average rating</h5>
+                    <div id="bar" style="height: 100%; width: 100%;">
+                        <script>
+                            const xBar = [55, 49, 44, 24, 15];
+                            const yBar = ["Italy", "France", "Spain", "USA", "Argentina"];
+
+                            BAR = document.getElementById('bar');
+
+                            const dataBar = [{
+                                x: xBar,
+                                y: yBar,
+                                type: "bar",
+                                orientation: "h"
+                            }];
+
+                            const layoutBar = {};
+
+                            Plotly.newPlot(BAR, dataBar, layoutBar);
+                        </script>
+                    </div>
                 </div>
 
             </div>
             <div class="col">
                 <div style="height: 300px;">
-                    <h5 class="h5">Most commented</h5> 
+                    <h5 class="h5">Most commented</h5>
                 </div>
                 <div style="height: 300px;">
                     <h5 class="h5">Highest number of users rated</h5>
+                    <div id="line" style="height: 100%; width: 100%;">
+                        <script>
+                            const xArray = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
+                            const yArray = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+
+                            // Define Data
+                            const data = [{
+                                x: xArray,
+                                y: yArray,
+                                mode: "lines",
+                                type: "scatter"
+                            }];
+
+                            // Define Layout
+                            const layout = {
+                                xaxis: { range: [40, 160], title: "Square Meters" },
+                                yaxis: { range: [5, 16], title: "Price in Millions" },
+                            };
+                            LINE = document.getElementById('line');
+                            Plotly.newPlot(LINE, data, layout);
+                        </script>
+                    </div>
+
                 </div>
 
             </div>
@@ -78,34 +121,34 @@
             <div class="col-8">
                 <table class="table table-hover">
                     <thead>
-                      <tr>
-                        <th scope="col">MovieID</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Release date</th>
-                        <th scope="col">Handle</th>
-                      </tr>
+                        <tr>
+                            <th scope="col">MovieID</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Release date</th>
+                            <th scope="col">Handle</th>
+                        </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                      </tr>
-                      <tr>
-                        <td>2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                      </tr>
-                      <tr>
-                        <td>3</th>
-                        <td>Larry the Bird</td>
-                        <td>Hello</td>
-                        <td>@twitter</td>
-                      </tr>
+                        <tr>
+                            <td>1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                        </tr>
+                        <tr>
+                            <td>2</th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                        </tr>
+                        <tr>
+                            <td>3</th>
+                            <td>Larry the Bird</td>
+                            <td>Hello</td>
+                            <td>@twitter</td>
+                        </tr>
                     </tbody>
-                  </table>
+                </table>
             </div>
             <div class="col-4">
                 <form action="" method="post" class="ms-2">

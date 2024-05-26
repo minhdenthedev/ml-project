@@ -2,12 +2,9 @@ package com.movielens.entity.form;
 
 public class ReviewForm {
     private long movieId;
-    private String title;
+    private long userId;
     private String body;
 
-    public String getTitle() {
-        return title;
-    }
 
     public String getBody() {
         return body;
@@ -17,8 +14,12 @@ public class ReviewForm {
         return movieId;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long id) {
+        this.userId = id;
     }
 
     public void setBody(String body) {

@@ -1,62 +1,43 @@
 package com.movielens.entity;
 
-import java.util.Date;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "reviews")
 public class Review {
-    String title;
+    
+    @Id
+    public String id;
+
     String body;
-    long userId;
-    long movieId;
-    int upvotes;
-    int downvotes;
-    boolean attitude;
-    Date date;
-    public String getTitle() {
-        return title;
+    String userId;
+    String movieId;
+    String attitude;
+    
+    public String getUserId() {
+        return userId;
     }
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
+    public String getMovieId() {
+        return movieId;
+    }
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
+    }
+
     public String getBody() {
         return body;
     }
     public void setBody(String body) {
         this.body = body;
     }
-    public long getUserId() {
-        return userId;
-    }
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-    public long getMovieId() {
-        return movieId;
-    }
-    public void setMovieId(long movieId) {
-        this.movieId = movieId;
-    }
-    public int getUpvotes() {
-        return upvotes;
-    }
-    public void setUpvotes(int upvotes) {
-        this.upvotes = upvotes;
-    }
-    public int getDownvotes() {
-        return downvotes;
-    }
-    public void setDownvotes(int downvotes) {
-        this.downvotes = downvotes;
-    }
-    public boolean isAttitude() {
+    
+    public String getAttitude() {
         return attitude;
     }
-    public void setAttitude(boolean attitude) {
+    public void setAttitude(String attitude) {
         this.attitude = attitude;
-    }
-    public Date getDate() {
-        return date;
-    }
-    public void setDate(Date date) {
-        this.date = date;
     }
 }

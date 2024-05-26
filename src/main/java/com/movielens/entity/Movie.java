@@ -4,6 +4,7 @@
  */
 package com.movielens.entity;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -18,27 +19,28 @@ public class Movie {
     private String imdbLink;
     private String genres;
     private String videoReleaseDate;
+    private BigDecimal avgRate;
+    private Long views;
 
     public Movie(Map<String, Object> map) {
-        this.id = (Integer) map.get("u_item.movie_id");
-        map.remove("u_item.movie_id");
-        this.title = (String) map.get("u_item.movie_title");
-        map.remove("u_item.movie_title");
-        this.releaseDate = (String) map.get("u_item.release_date");
-        map.remove("u_item.release_date");
-        this.imdbLink = (String) map.get("u_item.imdb_link");
-        map.remove("u_item.imdb_link");
-        this.videoReleaseDate = (String) map.get("u_item.video_release_date");
+        this.id = (Integer) map.get("movie_id");
+        map.remove("movie_id");
+        this.title = (String) map.get("movie_title");
+        map.remove("movie_title");
+        this.releaseDate = (String) map.get("release_date_temp");
+        map.remove("release_date_temp");
+        this.imdbLink = (String) map.get("imdb_link");
+        map.remove("imdb_link");
+        this.videoReleaseDate = (String) map.get("video_release_date");
         if (this.videoReleaseDate == null) {
             this.videoReleaseDate = "unknown";
         }
-        map.remove("u_item.video_release_date");
         // Append the genres
         int counter = 0;
         StringBuilder sb = new StringBuilder();
         for (String key : map.keySet()) {
-            if (map.get(key) == Byte.valueOf("1")) {
-                String genre = key.replace("u_item.", "");
+            if (map.get(key) == (Integer) 1) {
+                String genre = key.replace("_", "-");
                 if (counter == 0) {
                     sb.append(genre);
                 } else {
@@ -50,7 +52,8 @@ public class Movie {
         }
         
         this.genres = sb.toString();
-        
+        this.avgRate = (BigDecimal) map.get("avg_rate");
+        this.views = (Long) map.get("views");
     }
 
     public int getId() {
@@ -93,4 +96,11 @@ public class Movie {
         this.genres = genres;
     }
 
+    public BigDecimal getAvgRate() {
+        return avgRate;
+    }
+
+    public Long getViews() {
+        return views;
+    }
 }

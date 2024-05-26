@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Line Chart with Chart.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+</head>
+<body>
+    <canvas id="realTimeChart"></canvas>
+
+    <script>
+        // Initialize an empty chart
+        const ctx = document.getElementById('realTimeChart').getContext('2d');
+        const realTimeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'Real-time Data',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second'
+                        },
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Value'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Function to generate random data
+        function generateRandomData() {
+            return Math.floor(Math.random() * 100);
+        }
+
+        // Function to update the chart with new data
+        function updateChart() {
+            // Add a new data point with current timestamp
+            realTimeChart.data.datasets[0].data.push({ x: new Date(), y: generateRandomData() });
+
+            // Remove oldest data point if exceeding a certain number of points
+            if (realTimeChart.data.datasets[0].data.length > 20) {
+                realTimeChart.data.datasets[0].data.shift();
+            }
+
+            // Update the chart
+            realTimeChart.update();
+        }
+
+        // Update the chart every second
+        setInterval(updateChart, 1000);
+    </script>
+</body>
+</html>

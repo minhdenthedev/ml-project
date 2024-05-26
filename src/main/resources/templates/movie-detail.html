@@ -12,6 +12,7 @@
         integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script th:src="@{/js/movie-detail.js}"></script>
 </head>
 
 <body>
@@ -29,7 +30,13 @@
                         <a class="nav-link" aria-current="page" th:href="@{/}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Movies</a>
+                        <a class="nav-link active" th:href="@{/movies}">Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/history-insight}">History Insights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/realtime-insight}">Real-time Insights</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search" th:action="@{/movies-search}" th:object="${form}" method="post">
@@ -52,8 +59,8 @@
                              target="_blank"><span th:text="${movie.getImdbLink()}"></span></a></p>
                     </div>
                     <div class="col">
-                        <p class="fw-bold">Average rating: <span class="fw-normal">rating</span></p>
-                        <p class="fw-bold">Number of users rated: <span class="fw-normal">number</span></p>
+                        <p class="fw-bold">Average rating: <span class="fw-normal" th:text="${movie.getAvgRate()}"></span></p>
+                        <p class="fw-bold">Views: <span class="fw-normal" th:text="${movie.getViews()}"></span></p>
                     </div>
                     <p>Genres: <span th:text="${movie.getGenres()}"></span></p>
                 </div>
@@ -85,10 +92,6 @@
         <div class="col mt-4">
             <form th:action="@{/movies/__${movie.id}__/post-review}" th:object="${reviewForm}" method="post" class="ms-4 ps-2 mb-3">
                 <legend class="fw-bold fs-5 mb-1">Share your thoughts on this movie</legend>
-                <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="floatingTitle" placeholder="Write some title..." th:field="*{title}">
-                    <label for="floatingTitle">Title</label>
-                </div>
                 <div class="form-floating">
                     <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2"
                         style="height: 100px" th:field="*{body}"></textarea>
@@ -99,33 +102,41 @@
             <hr class="ms-4 ps-2">
             <h3 class="h3 ms-4 ps-2 mb-2">Others have reviewed</h3>
             <ul style="list-style: none; height: 830px; overflow-y: auto;">
-                <li class="mb-3" th:each="item : ${reviewList}">
+                <li class="mb-3" th:each="item : ${reviews}">
                     <div class="card">
                         <div class="card-body">
-                            <div class="text-body-secondary fs-small mb-2"><span th:text="${item.userId}"></span> at <span th:text="${item.date}"></span></div>
+                            <div class="text-body-secondary fst-italic fs-small mb-1">User <span th:text="${item.userId}"></span></div>
                             <div class="d-flex justify-content-between">
-                                <div>
-                                    <h5 class="card-title" th:text="${item.title}"></h5>
+                                <!-- <div>
+                                    <h5 class="card-title" th:text="${item.id}"></h5>
+                                </div> -->
+                                <p class="card-text" th:text="${item.body}"></p>
+
+                                <div th:if="${item.attitude == 'Negative'}">
+                                    <span class="badge text-bg-danger">Bad</span>
                                 </div>
-                                <div><span class="badge text-bg-success">Good</span></div>
+                                <div th:if="${item.attitude == 'Positive'}">
+                                    <span class="badge text-bg-success">Good</span>
+                                </div>
                             </div>
-                            <p class="card-text" th:text="${item.body}"></p>
-                            <hr>
-                            <div class="d-flex justify-content-between">
+                            <!-- <hr> -->
+                            <!-- <div class="d-flex justify-content-between">
                                 <div class="d-flex">
                                     <input class="form-control me-2" type="search"
-                                        placeholder="Comment your thoughts here..." aria-label="Search">
-                                    <button class="btn btn-outline-dark" type="submit">Comment</button>
-                                </div>
-                                <div>
-                                    <button class="btn btn-outline-primary"><span th:text="${item.upvotes}"></span> <i class="fa fa-thumbs-up"
-                                            aria-hidden="true"></i></button>
-                                    <button class="btn btn-outline-danger"><span th:text="${item.downvotes}"></span> <i class="fa fa-thumbs-down"
-                                            aria-hidden="true"></i></button>
-                                </div>
-                            </div>
-                            <hr>
-                            <ul class="ms-1 ps-0 pe-3" style="list-style: none;">
+                                        placeholder="Comment your thoughts here..." aria-label="Search"> -->
+                                    <!-- <button class="btn btn-outline-dark" type="submit">Comment</button> -->
+                                <!-- </div> -->
+                                <!-- <div>
+                                    <button th:data-id="${item.id}" th:data-value="true" th:onclick="sendVote(this.getAttribute('data-id'), this.getAttribute('data-value'))" class="btn btn-outline-primary">
+                                        <span th:text="${item.upvotes}"></span> <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                    </button>
+                                    <button th:data-id="${item.id}" th:data-value="false" th:onclick="sendVote(this.getAttribute('data-id'), this.getAttribute('data-value'))" class="btn btn-outline-danger">
+                                        <span th:text="${item.downvotes}"></span> <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+                                    </button>
+                                </div>                                 -->
+                            <!-- </div> -->
+                            <!-- <hr> -->
+                            <!-- <ul class="ms-1 ps-0 pe-3" style="list-style: none;">
                                 <li class="mb-2">
                                     <div class="card">
                                         <div class="card-body">
@@ -150,7 +161,7 @@
                                         </div>
                                     </div>
                                 </li>
-                            </ul>
+                            </ul> -->
                         </div>
                     </div>
                 </li>
