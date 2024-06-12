@@ -1,0 +1,3 @@
+goodbye|93
+hi|50
+hello|21

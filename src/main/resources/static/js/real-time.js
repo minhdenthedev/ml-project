@@ -14,21 +14,31 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function loadCSV(filepath) {
-    return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    resolve(this.responseText);
-                } else {
-                    reject(new Error('Failed to load file'));
-                }
+    console.log('Starting to load CSV from:', filepath);
+    return fetch(filepath)
+        .then(response => {
+            console.log('Received response, status:', response.status);
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
             }
-        };
-        xhr.open('GET', filepath, true);
-        xhr.send();
-    });
+            return response.text();
+        })
+        .then(data => {
+            console.log('Fetched data length:', data.length);
+            if (data) {
+                console.log('CSV content:', data);
+                return data;
+            } else {
+                console.log('Fetched data is empty');
+                throw new Error('Response is empty');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch operation error:', error);
+            throw error;
+        });
 }
+
 
 function createEmptyLineChart(ctx) {
     return new Chart(ctx, {
@@ -245,6 +255,7 @@ async function updateVisitChart() {
 
 async function updateRateChart() {
     const text = await loadCSV(RATE);
+    console.log(text);
     const lines = text.split('\n');
     if (lines[0] == "null") {
         return;
